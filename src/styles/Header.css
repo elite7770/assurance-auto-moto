@@ -1,0 +1,53 @@
+@import url('../styles/Header.css');
+@import url('../styles/Home.css');
+
+.header {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+}
+
+.header .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1E40AF;
+}
+
+.header nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header nav ul li a {
+  text-decoration: none;
+  color: #64748B;
+  font-weight: 500;
+  padding: 0.5rem;
+  transition: color 0.3s;
+}
+
+.header nav ul li.active a,
+.header nav ul li a:hover {
+  color: #1E40AF;
+}
+
+.btn-primary {
+  background-color: #059669;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #047857;
+}
+

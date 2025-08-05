@@ -1,0 +1,86 @@
+    .apropos-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #374151;
+}
+
+.apropos-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.apropos-hero h1 {
+  font-size: 2rem;
+  color: #1E40AF;
+  margin-bottom: 0.5rem;
+}
+
+.apropos-hero p {
+  font-size: 1.125rem;
+  color: #64748B;
+}
+
+.apropos-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.apropos-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.apropos-text h2 {
+  color: #1E40AF;
+  margin-bottom: 0.75rem;
+}
+
+.apropos-text p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.apropos-text ul {
+  list-style: none;
+  padding: 0;
+}
+
+.apropos-text li {
+  margin-bottom: 0.5rem;
+}
+
+.apropos-text strong {
+  color: #059669;
+}
+
+.apropos-image {
+  flex: 1;
+  min-width: 280px;
+}
+
+.apropos-image img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.apropos-stats {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.apropos-stats .stat h3 {
+  font-size: 2rem;
+  color: #EA580C;
+}
+
+.apropos-stats .stat p {
+  color: #64748B;
+  margin-top: 0.25rem;
+}
