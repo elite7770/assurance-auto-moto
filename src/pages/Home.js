@@ -1,53 +1,31 @@
 import React from 'react';
-import './Home.css';
 import { Link } from 'react-router-dom';
+import '../styles/Home.css';
+import FeaturesSection from '../components/FeaturesSection';
+import TestimonialsSection from '../components/TestimonialsSection';
 
 function Home() {
   return (
     <main className="home-page">
+
       <section className="hero-section">
+        <video autoPlay muted loop className="hero-video">
+          <source src="/videos/hero.mp4" type="video/mp4" />
+          {/* Fallback Image */}
+          <img src="/images/home-hero.jpg" alt="Hero" />
+        </video>
+        <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1>Protégez ce qui compte le plus</h1>
-          <p>Votre mobilité, notre expertise. Assurance Auto & Moto sur-mesure, rapide et fiable.</p>
+          <h1>Assurez Votre Mobilité en Toute Confiance</h1>
+          <p>Des formules flexibles pour Auto & Moto, adaptées à votre style de vie.</p>
           <Link to="/devis" className="cta-button">Obtenir un devis</Link>
         </div>
-        <div className="hero-image">
-          <img src="https://via.placeholder.com/500x300" alt="Assurance Auto & Moto" />
-        </div>
       </section>
 
-      <section className="features-section">
-        <div className="feature-card">
-          <h3>Couverture complète</h3>
-          <p>Des garanties adaptées à vos besoins pour rouler en toute sérénité.</p>
-        </div>
-        <div className="feature-card">
-          <h3>Assistance 24h/7j</h3>
-          <p>Un service d’assistance réactif disponible à tout moment.</p>
-        </div>
-        <div className="feature-card">
-          <h3>Devis en 3 minutes</h3>
-          <p>Obtenez une estimation claire et rapide en ligne.</p>
-        </div>
-      </section>
+      <FeaturesSection />
 
-      <section className="testimonials-section">
-        <h2>Ce que disent nos clients</h2>
-        <div className="testimonial-carousel">
-          <div className="testimonial-card">
-            <p>"Service impeccable, rapide et à l’écoute. J'ai assuré ma moto en quelques minutes."</p>
-            <span>- Sophie L.</span>
-          </div>
-          <div className="testimonial-card">
-            <p>"Des offres claires et une équipe réactive en cas de sinistre. Je recommande !"</p>
-            <span>- Marc D.</span>
-          </div>
-          <div className="testimonial-card">
-            <p>"Le devis en ligne est super pratique, tout est transparent."</p>
-            <span>- Julien R.</span>
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
+
     </main>
   );
 }

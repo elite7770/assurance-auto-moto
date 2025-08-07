@@ -1,0 +1,107 @@
+.features-section {
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, rgba(15,23,42,1) 100%),
+    url('/public/images/hero-bj.png') no-repeat center center;
+  background-size: cover;
+  padding: 100px 20px;
+  backdrop-filter: blur(5px);
+  overflow: hidden;
+}
+
+.features-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.features-wrapper h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.75rem;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #94A3B8;
+  margin-bottom: 60px;
+}
+
+/* For Desktop: Grid Layout */
+.features-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  justify-items: center;
+}
+
+/* For Mobile: Horizontal Scroll Layout */
+@media (max-width: 900px) {
+  .features-cards {
+    display: flex;
+    overflow-x: auto;
+    gap: 30px;
+    padding-bottom: 20px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .feature-item {
+    min-width: 280px;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+  }
+}
+
+.feature-item {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  padding: 40px 20px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.feature-item:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+
+.icon-bubble {
+  background: linear-gradient(135deg, #2563EB, #DC2626);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+.feature-item:hover .icon-bubble {
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.7);
+}
+
+.feature-icon {
+  color: #FFFFFF;
+  width: 32px;
+  height: 32px;
+}
+
+.feature-item h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.feature-item p {
+  color: #CBD5E1;
+  font-size: 1rem;
+  line-height: 1.5;
+}

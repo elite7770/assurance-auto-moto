@@ -1,68 +1,136 @@
 .site-footer {
-  background-color: #1E40AF;
-  color: #F8FAFC;
-  padding: 2rem 1rem;
-  margin-top: 3rem;
+  background-color: #0f172a;
+  color: #f1f5f9;
+  padding: 3rem 1rem 2rem;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.footer-content {
+.footer-wrapper {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 2rem;
+  justify-content: space-between; /* Add this line */
 }
 
 .footer-branding {
-  flex: 1;
-  min-width: 250px;
+  flex: 1 1 250px;
 }
 
 .footer-branding h2 {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  color: #38bdf8;
   margin-bottom: 0.5rem;
 }
 
 .footer-branding p {
-  color: #e0e7ff;
-}
-
-.footer-links {
-  display: flex;
-  flex: 1;
-  gap: 2rem;
-  min-width: 250px;
-}
-
-.footer-links h4 {
   font-size: 1rem;
-  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: #cbd5e1;
 }
 
-.footer-links ul {
+.footer-nav {
+  flex: 2 1 500px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+  justify-content: flex-end; /* Add this line */
+}
+
+.footer-section h4 {
+  font-size: 1.125rem;
+  margin-bottom: 0.75rem;
+  color: #facc15;
+}
+
+.footer-section ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.footer-links li {
+.footer-section li {
   margin-bottom: 0.5rem;
 }
 
-.footer-links a {
-  color: #F8FAFC;
+.footer-section a {
+  color: #f1f5f9;
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.2s ease-in-out;
 }
 
-.footer-links a:hover {
-  color: #059669;
+.footer-section a:hover {
+  color: #22d3ee;
+}
+
+.social-links a::before {
+  content: '🔗 ';
+}
+
+.footer-cta {
+  background-color: #1e293b;
+  margin: 2rem auto 0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 600px;
+  text-align: center;
+}
+
+.footer-cta p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #e2e8f0;
+}
+
+.footer-cta form {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-cta input[type="email"] {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 4px;
+  flex: 1 1 200px;
+}
+
+.footer-cta button {
+  padding: 0.75rem 1.5rem;
+  background-color: #38bdf8;
+  border: none;
+  border-radius: 4px;
+  color: #0f172a;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.footer-cta button:hover {
+  background-color: #0ea5e9;
 }
 
 .footer-bottom {
   text-align: center;
   margin-top: 2rem;
   font-size: 0.875rem;
-  color: #cbd5e1;
+  color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .footer-wrapper,
+  .footer-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-cta form {
+    flex-direction: column;
+  }
+
+  .footer-cta input,
+  .footer-cta button {
+    width: 100%;
+  }
 }

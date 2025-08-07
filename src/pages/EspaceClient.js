@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './EspaceClient.css';
+import '../styles/EspaceClient.css';
 
 function EspaceClient() {
   const [email, setEmail] = useState('');

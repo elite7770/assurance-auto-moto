@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Confirmation.css';
+import '../styles/Confirmation.css';
 
 function Confirmation() {
   return (
