@@ -1,49 +1,30 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import LoginForm from '../components/LoginForm';
+import RegisterForm from '../components/RegisterForm';
 import '../styles/EspaceClient.css';
 
 function EspaceClient() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Simuler une vérification simple
-    if (email === 'client@example.com' && password === 'password123') {
-      setMessage('Connexion réussie ! Bienvenue dans votre espace client.');
-    } else {
-      setMessage('Email ou mot de passe incorrect.');
-    }
-  };
+  // If user is already logged in, redirect to dashboard
+  if (currentUser) {
+    navigate('/dashboard');
+    return null;
+  }
 
   return (
     <main className="espace-client-page">
-      <h1>Connexion à l'Espace Client</h1>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-
-        <label>
-          Mot de passe
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-
-        <button type="submit">Se connecter</button>
-      </form>
-
-      {message && <p className="login-message">{message}</p>}
+      <div className="auth-container">
+        {isLogin ? (
+          <LoginForm onSwitchToRegister={() => setIsLogin(false)} />
+        ) : (
+          <RegisterForm onSwitchToLogin={() => setIsLogin(true)} />
+        )}
+      </div>
     </main>
   );
 }

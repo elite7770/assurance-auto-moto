@@ -1,74 +1,73 @@
-<<<<<<< HEAD
-# assurance-auto-moto
-=======
-# Getting Started with Create React App
+# AssurMobility — Assurance Auto & Moto
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern single-page application for auto & moto insurance quotes, customer area, and support. Built with React and React Router, featuring authentication, a client dashboard, and advanced contact & support tools (live chat, FAQ, contact form with file upload, and appointment booking).
 
-## Available Scripts
+## Quick Start
 
-In the project directory, you can run:
+```bash
+npm install
+npm start
+```
 
-### `npm start`
+- Runs at `http://localhost:3000`
+- Build for production: `npm run build`
+- Tests (CRA default): `npm test`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Tech Stack
+- React (Create React App)
+- React Router
+- CSS modules by feature folders
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Project Structure
+```
+assurance-auto-moto/
+  public/
+  src/
+    components/
+    pages/
+    styles/
+    context/
+    App.js
+    index.js
+    index.css
+  docs/
+  package.json
+```
 
-### `npm test`
+See `docs/PROJECT_STRUCTURE.md` for a detailed breakdown.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Key Features
+- Authentication: login, registration, protected routes
+- Client Dashboard: policies, claims, documents, profile
+- Contact & Support: live chat, searchable FAQ, enhanced contact form (file upload), appointment booking
+- Smooth navigation: scroll-to-top on route change
+- Theming via CSS variables
 
-### `npm run build`
+Details in `docs/FEATURES.md`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Routes
+- `/` Accueil
+- `/assurance-auto` Assurance Auto
+- `/assurance-moto` Assurance Moto
+- `/devis` Devis
+- `/a-propos` À propos
+- `/contact` Contact & Support (Chat, FAQ, Contact, RDV)
+- `/espace-client` Espace Client (Login / Register)
+- `/dashboard` Tableau de bord (protégé)
+- `/confirmation` Confirmation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+More in `docs/ROUTES.md`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Theming
+Global CSS variables live in `src/index.css` and power colors, gradients, and shadows across the app.
+See `docs/THEME.md` for the variable list and usage examples.
 
-### `npm run eject`
+## Contributing
+- Use meaningful names and keep code readable
+- Keep styles consistent with theme variables
+- Place UI in `components/`, page-level in `pages/`, cross-cutting in `context/`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Read `docs/CONTRIBUTING.md` before opening a PR.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
->>>>>>> a458309 (Initial commit)
+## License
+This project is licensed under the terms in `LICENSE`.

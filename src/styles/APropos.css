@@ -4,6 +4,7 @@
   padding: 2rem 1rem;
   font-family: 'Inter', sans-serif;
   color: #1E293B;
+  background: linear-gradient(120deg, #e0e7ef 0%, #f1f5f9 100%);
 }
 
 /* HERO SECTION */
@@ -158,8 +159,9 @@
 
 .apropos-card, .stat-modern {
   position: relative;
-  background: rgba(236,245,255,0.45);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(12px);
+  border: 2px solid #38bdf8;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(56,189,248,0.10);
   padding: 48px 36px;
@@ -195,16 +197,12 @@
   z-index: 1;
 }
 
-.apropos-card, .stat-modern {
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-
-.apropos-card h2 {
-  font-size: 1.5rem;
-  color: #38bdf8;
-  margin-bottom: 1rem;
-  font-family: 'Space Grotesk', 'Inter', sans-serif;
+.apropos-card h2, .stat-modern h3 {
+  background: linear-gradient(90deg, #38bdf8, #dc2626);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 .apropos-values-list {
@@ -256,8 +254,8 @@
   max-width: 1000px;
 }
 .stat-modern {
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(8px);
+  background: #fff7ed; /* very light orange */
+  border: 1.5px solid #fed7aa;
   border-radius: 20px;
   box-shadow: 0 6px 24px rgba(220,38,38,0.10);
   padding: 40px 32px 32px 32px;
@@ -479,3 +477,128 @@
   0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(56,189,248,0.15); }
   50% { transform: scale(1.02); box-shadow: 0 12px 40px rgba(56,189,248,0.25); }
 }
+
+/* Minimalist & Elegant overrides (keep theme, remove glass) */
+.apropos-page {
+  background: #f8fafc;
+}
+
+.apropos-card, .stat-modern {
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  backdrop-filter: none;
+}
+
+.apropos-card::before, .stat-modern::before {
+  display: none !important;
+  content: none !important;
+}
+
+.apropos-card h2, .stat-modern h3 {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  background-clip: initial !important;
+  color: #0ea5e9 !important; /* brand blue accent */
+}
+
+.stat-icon {
+  background: #e0f2fe;
+  color: #0ea5e9;
+}
+
+/* Smooth hover states */
+.apropos-card:hover, .stat-modern:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* Cohesive Minimalist styles for À propos page */
+.apropos-why-choose,
+.apropos-team-section {
+  margin: 56px 0 32px 0;
+  text-align: center;
+}
+.apropos-why-choose h2,
+.apropos-team-section h2 {
+  font-size: 2rem;
+  color: #0ea5e9;
+  margin-bottom: 1.5rem;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.why-choose-cards,
+.team-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.why-choose-card,
+.team-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 24px 20px;
+  min-width: 220px;
+  max-width: 320px;
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.why-choose-card:hover,
+.team-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.why-icon,
+.team-icon {
+  background: #e0f2fe;
+  color: #0ea5e9;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(14,165,233,0.12);
+}
+
+.why-choose-card h4,
+.team-card h4 {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin: 6px 0 6px 0;
+  font-weight: 700;
+}
+.why-choose-card p,
+.team-card p {
+  color: #475569;
+  font-size: 0.98rem;
+}
+
+/* Refine primary cards */
+.apropos-card {
+  border-left: 6px solid #0ea5e9;
+}
+
+/* Refine stat cards to feel consistent */
+.stat-modern {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+}
+.stat-modern h3 { color: #dc2626 !important; }
+.stat-modern p { color: #475569; }
+
+@media (max-width: 900px) {
+  .why-choose-cards, .team-cards { flex-direction: column; gap: 16px; }
+}
+
+/* Remove white gap between header and hero */
+.apropos-page { padding-top: 0 !important; }
+.apropos-hero-animated { margin-top: 0 !important; }

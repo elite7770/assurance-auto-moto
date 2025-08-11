@@ -1,81 +1,57 @@
 import React, { useState } from 'react';
+import FAQSection from '../components/FAQSection';
+import EnhancedContactForm from '../components/EnhancedContactForm';
+import AppointmentBooking from '../components/AppointmentBooking';
+import LiveChatWidget from '../components/LiveChatWidget';
 import '../styles/Contact.css';
 
 function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Simulation d'envoi
-    setSubmitted(true);
-  };
+  const [activeTab, setActiveTab] = useState('contact');
 
   return (
     <main className="contact-page">
-      <h1>Contactez-nous</h1>
+      <div className="contact-hero">
+        <h1>Contact & Support</h1>
+        <p>Nous sommes là pour vous accompagner à chaque étape</p>
+      </div>
 
-      <section className="contact-content">
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <label>
-            Nom
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
+      <div className="contact-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'contact' ? 'active' : ''}`}
+          onClick={() => setActiveTab('contact')}
+        >
+          📞 Nous Contacter
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`}
+          onClick={() => setActiveTab('faq')}
+        >
+          ❓ FAQ
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'appointment' ? 'active' : ''}`}
+          onClick={() => setActiveTab('appointment')}
+        >
+          📅 Prendre RDV
+        </button>
+      </div>
 
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </label>
+      <div className="contact-content">
+        {activeTab === 'contact' && (
+          <EnhancedContactForm />
+        )}
 
-          <label>
-            Message
-            <textarea
-              name="message"
-              rows="5"
-              value={formData.message}
-              onChange={handleChange}
-              required
-            />
-          </label>
+        {activeTab === 'faq' && (
+          <FAQSection />
+        )}
 
-          <button type="submit">Envoyer</button>
+        {activeTab === 'appointment' && (
+          <AppointmentBooking />
+        )}
+      </div>
 
-          {submitted && <p className="success-message">Message envoyé ! Nous vous répondrons rapidement.</p>}
-        </form>
-
-        <div className="contact-info">
-          <h2>Nos coordonnées</h2>
-          <p><strong>Adresse :</strong> 123 Avenue de la Mobilité, Paris</p>
-          <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
-          <p><strong>Email :</strong> contact@assurmobility.fr</p>
-          <div className="map-placeholder">
-            <p>Carte Google Maps (Simulation)</p>
-          </div>
-        </div>
-      </section>
+      {/* Live Chat Widget */}
+      <LiveChatWidget />
     </main>
   );
 }

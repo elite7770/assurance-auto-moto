@@ -1,10 +1,11 @@
 import React from 'react';
-import { ShieldCheck, Users, Lightbulb, Handshake, Award } from 'lucide-react';
+import { ShieldCheck, Users, Lightbulb, Handshake, Award, User, Star } from 'lucide-react';
 import '../styles/APropos.css';
 
 function APropos() {
   return (
     <main className="apropos-page">
+      {/* Hero Section */}
       <section className="apropos-hero-animated">
         <div className="apropos-hero-bg">
           {/* Animated SVG background */}
@@ -28,6 +29,7 @@ function APropos() {
         </div>
       </section>
 
+      {/* Histoire & Valeurs */}
       <section className="apropos-content-modern">
         <div className="apropos-card">
           <h2>Notre Histoire</h2>
@@ -44,7 +46,6 @@ function APropos() {
             <li><Handshake className="value-icon" /> <strong>Engagement :</strong> Réseau de garages partenaires partout en France.</li>
           </ul>
         </div>
-
         <div className="apropos-image-modern apropos-mission-circle">
           <div className="mission-statement">
             <h3>Votre mobilité,</h3>
@@ -54,6 +55,27 @@ function APropos() {
         </div>
       </section>
 
+      {/* Pourquoi nous choisir */}
+      <section className="apropos-why-choose">
+        <h2>Pourquoi nous choisir ?</h2>
+        <div className="why-choose-cards">
+          <div className="why-choose-card"><Star className="why-icon" /><h4>Service client 24/7</h4><p>Une équipe dédiée, disponible à tout moment pour répondre à vos besoins.</p></div>
+          <div className="why-choose-card"><ShieldCheck className="why-icon" /><h4>Protection optimale</h4><p>Des garanties solides et adaptées à chaque profil de conducteur.</p></div>
+          <div className="why-choose-card"><Award className="why-icon" /><h4>Récompenses & confiance</h4><p>98% de satisfaction client et de nombreux partenaires agréés.</p></div>
+        </div>
+      </section>
+
+      {/* Notre équipe */}
+      <section className="apropos-team-section">
+        <h2>Notre équipe</h2>
+        <div className="team-cards">
+          <div className="team-card"><User className="team-icon" /><h4>Marie Dupont</h4><p>Directrice Générale</p></div>
+          <div className="team-card"><User className="team-icon" /><h4>Ali Ben Youssef</h4><p>Responsable Relation Client</p></div>
+          <div className="team-card"><User className="team-icon" /><h4>Julie Martin</h4><p>Expert Assurance</p></div>
+        </div>
+      </section>
+
+      {/* Stats */}
       <section className="apropos-stats-modern">
         <div className="stat-modern">
           <Award className="stat-icon" />
