@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import FAQSection from '../components/FAQSection';
-import EnhancedContactForm from '../components/EnhancedContactForm';
-import AppointmentBooking from '../components/AppointmentBooking';
-import LiveChatWidget from '../components/LiveChatWidget';
+import FAQSection from '../components/contact/FAQSection';
+import EnhancedContactForm from '../components/contact/EnhancedContactForm';
+import AppointmentBooking from '../components/contact/AppointmentBooking';
+import LiveChatWidget from '../components/contact/LiveChatWidget';
 import '../styles/Contact.css';
 
 function Contact() {

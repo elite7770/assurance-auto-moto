@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, AlertCircle, Info, Car, Motorcycle, Shield, Clock, Calculator } from 'lucide-react';
+import { CheckCircle, Info, Car, Shield, Clock, Calculator } from 'lucide-react';
+import FormField from '../components/forms/FormField';
+import CoverageCard from '../components/coverage/CoverageCard';
 import '../styles/Devis.css';
 
 function Devis() {
@@ -30,12 +32,12 @@ function Devis() {
       garantieTousRisques: false,
       garantieAssistance: false,
       garantieDefense: false,
-      franchise: '300',
-      bonus: '50'
+      franchise: '3000',
+      bonus: '0'
     }
   });
   
-  const { formState: { errors, isValid }, watch, setValue } = methods;
+  const { formState: { isValid }, watch, setValue } = methods;
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,11 +50,11 @@ function Devis() {
   const watchedValues = watch();
 
   const stepTitles = [
-    'Informations Véhicule',
-    'Profil Conducteur',
-    'Adresse & Usage',
-    'Choix des Garanties',
-    'Récapitulatif & Prix'
+    '1. Informations Véhicule',
+    '2. Profil Conducteur',
+    '3. Adresse & Usage',
+    '4. Choix des Garanties',
+    '5. Récapitulatif & Prix'
   ];
 
   // Enhanced vehicle brands and models
@@ -87,10 +89,10 @@ function Devis() {
 
   // Franchise options
   const franchiseOptions = [
-    { value: '150', label: '150 €' },
-    { value: '300', label: '300 €' },
-    { value: '500', label: '500 €' },
-    { value: '750', label: '750 €' }
+    { value: '1000', label: '1 000 MAD' },
+    { value: '3000', label: '3 000 MAD' },
+    { value: '5000', label: '5 000 MAD' },
+    { value: '8000', label: '8 000 MAD' }
   ];
 
   // Bonus options
@@ -102,9 +104,43 @@ function Devis() {
     { value: '-50', label: '-50%' }
   ];
 
+  // Select options with placeholders
+  const vehiculeTypeOptions = [
+    { value: '', label: '--Choisir--' },
+    { value: 'auto', label: 'Voiture' },
+    { value: 'moto', label: 'Moto' },
+  ];
+
+  const usageSelectOptions = [
+    { value: '', label: '--Sélectionner--' },
+    ...usageOptions,
+  ];
+
+  const powerSelectOptions = [
+    { value: '', label: '--Sélectionner--' },
+    ...powerOptions,
+  ];
+
+  const experienceSelectOptions = [
+    { value: '', label: '--Sélectionner--' },
+    ...experienceOptions,
+  ];
+
+  // Keep direct arrays for simple selects
+
+  const currentYear = new Date().getFullYear();
+  const yearSelectOptions = [
+    { value: '', label: '--Sélectionner--' },
+    ...Array.from({ length: currentYear - 1990 + 1 }, (_, i) => currentYear - i).map((year) => ({
+      value: String(year),
+      label: String(year),
+    })),
+  ];
+
   // Price calculation function
   const calculatePrice = (data) => {
-    let basePrice = data.vehiculeType === 'auto' ? 800 : 600;
+    // Base en MAD (Maroc)
+    let basePrice = data.vehiculeType === 'auto' ? 3500 : 2500;
     
     // Vehicle factors
     const currentYear = new Date().getFullYear();
@@ -135,16 +171,16 @@ function Devis() {
     
     // Coverage additions
     let coveragePrice = 0;
-    if (data.garantieVol) coveragePrice += 200;
-    if (data.garantieBris) coveragePrice += 150;
-    if (data.garantieTousRisques) coveragePrice += 400;
-    if (data.garantieAssistance) coveragePrice += 100;
-    if (data.garantieDefense) coveragePrice += 80;
+    if (data.garantieVol) coveragePrice += 1500;
+    if (data.garantieBris) coveragePrice += 800;
+    if (data.garantieTousRisques) coveragePrice += 3000;
+    if (data.garantieAssistance) coveragePrice += 300;
+    if (data.garantieDefense) coveragePrice += 200;
     
     // Franchise reduction
     const franchise = parseInt(data.franchise);
-    if (franchise === 500) coveragePrice *= 0.9;
-    else if (franchise === 750) coveragePrice *= 0.85;
+    if (franchise === 5000) coveragePrice *= 0.9;
+    else if (franchise === 8000) coveragePrice *= 0.85;
     
     return Math.round(basePrice + coveragePrice);
   };
@@ -197,8 +233,9 @@ function Devis() {
     telephone: { 
       required: 'Téléphone requis',
       pattern: {
-        value: /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/,
-        message: 'Numéro de téléphone invalide'
+        // Maroc: +212 ou 0, indicatif 5,6,7 puis 8 chiffres
+        value: /^(?:\+212|0)[\s.-]?(?:[5-7])[0-9]{8}$/,
+        message: 'Numéro de téléphone marocain invalide'
       }
     },
     age: { 
@@ -347,126 +384,58 @@ function Devis() {
               >
                 <div className="step-header">
                   <Car size={24} />
-                  <h2>Informations sur votre véhicule</h2>
+                  <h2>Étape 1 : Informations sur votre véhicule</h2>
                 </div>
 
                 <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="vehiculeType">Type de véhicule *</label>
-                    <select 
-                      id="vehiculeType"
-                      {...methods.register('vehiculeType', validationSchema.vehiculeType)} 
-                      className={errors.vehiculeType ? 'error' : ''}
-                    >
-                      <option value="">--Choisir--</option>
-                      <option value="auto">Voiture</option>
-                      <option value="moto">Moto</option>
-                    </select>
-                    {errors.vehiculeType && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.vehiculeType.message}
-                      </span>
-                    )}
-                  </div>
+                  <FormField
+                    name="vehiculeType"
+                    label="Type de véhicule *"
+                    type="select"
+                    options={vehiculeTypeOptions}
+                    rules={validationSchema.vehiculeType}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="marque">Marque *</label>
-                    <select 
-                      id="marque"
-                      {...methods.register('marque', validationSchema.marque)} 
-                      className={errors.marque ? 'error' : ''}
+                  <FormField
+                    name="marque"
+                    label="Marque *"
+                    type="select"
+                    options={[{ value: '', label: '--Choisir--' }, ...(watchedValues.vehiculeType ? vehicleBrands[watchedValues.vehiculeType].map((b) => ({ value: b, label: b })) : [])]}
+                    rules={validationSchema.marque}
                       disabled={!watchedValues.vehiculeType}
-                    >
-                      <option value="">--Choisir--</option>
-                      {watchedValues.vehiculeType && vehicleBrands[watchedValues.vehiculeType]?.map(brand => (
-                        <option key={brand} value={brand}>{brand}</option>
-                      ))}
-                    </select>
-                    {errors.marque && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.marque.message}
-                      </span>
-                    )}
-                  </div>
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="modele">Modèle *</label>
-                    <input 
+                  <FormField
+                    name="modele"
+                    label="Modèle *"
                       type="text" 
-                      id="modele"
-                      {...methods.register('modele', validationSchema.modele)} 
-                      className={errors.modele ? 'error' : ''}
                       placeholder="Ex: Clio, 208, C3..."
-                    />
-                    {errors.modele && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.modele.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.modele}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="annee">Année *</label>
-                    <select 
-                      id="annee"
-                      {...methods.register('annee', validationSchema.annee)} 
-                      className={errors.annee ? 'error' : ''}
-                    >
-                      <option value="">--Sélectionner--</option>
-                      {Array.from({ length: new Date().getFullYear() - 1990 + 1 }, (_, i) => new Date().getFullYear() - i).map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                    {errors.annee && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.annee.message}
-                      </span>
-                    )}
-                  </div>
+                  <FormField
+                    name="annee"
+                    label="Année *"
+                    type="select"
+                    options={yearSelectOptions}
+                    rules={validationSchema.annee}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="puissance">Puissance fiscale *</label>
-                    <select 
-                      id="puissance"
-                      {...methods.register('puissance', validationSchema.puissance)} 
-                      className={errors.puissance ? 'error' : ''}
-                    >
-                      <option value="">--Sélectionner--</option>
-                      {powerOptions.map(option => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
-                    {errors.puissance && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.puissance.message}
-                      </span>
-                    )}
-                  </div>
+                  <FormField
+                    name="puissance"
+                    label="Puissance fiscale *"
+                    type="select"
+                    options={powerSelectOptions}
+                    rules={validationSchema.puissance}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="usage">Usage du véhicule *</label>
-                    <select 
-                      id="usage"
-                      {...methods.register('usage', validationSchema.usage)} 
-                      className={errors.usage ? 'error' : ''}
-                    >
-                      <option value="">--Sélectionner--</option>
-                      {usageOptions.map(option => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
-                    {errors.usage && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.usage.message}
-                      </span>
-                    )}
-                  </div>
+                  <FormField
+                    name="usage"
+                    label="Usage du véhicule *"
+                    type="select"
+                    options={usageSelectOptions}
+                    rules={validationSchema.usage}
+                  />
                 </div>
 
                 <div className="buttons">
@@ -488,132 +457,65 @@ function Devis() {
               >
                 <div className="step-header">
                   <Shield size={24} />
-                  <h2>Profil du conducteur principal</h2>
+                  <h2>Étape 2 : Profil du conducteur principal</h2>
                 </div>
 
                 <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="nom">Nom *</label>
-                    <input 
+                  <FormField
+                    name="nom"
+                    label="Nom *"
                       type="text" 
-                      id="nom"
-                      {...methods.register('nom', validationSchema.nom)} 
-                      className={errors.nom ? 'error' : ''}
                       placeholder="Votre nom"
-                    />
-                    {errors.nom && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.nom.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.nom}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="prenom">Prénom *</label>
-                    <input 
+                  <FormField
+                    name="prenom"
+                    label="Prénom *"
                       type="text" 
-                      id="prenom"
-                      {...methods.register('prenom', validationSchema.prenom)} 
-                      className={errors.prenom ? 'error' : ''}
                       placeholder="Votre prénom"
-                    />
-                    {errors.prenom && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.prenom.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.prenom}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="email">Email *</label>
-                    <input 
+                  <FormField
+                    name="email"
+                    label="Email *"
                       type="email" 
-                      id="email"
-                      {...methods.register('email', validationSchema.email)} 
-                      className={errors.email ? 'error' : ''}
                       placeholder="votre@email.com"
-                    />
-                    {errors.email && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.email.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.email}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="telephone">Téléphone *</label>
-                    <input 
+                  <FormField
+                    name="telephone"
+                    label="Téléphone *"
                       type="tel" 
-                      id="telephone"
-                      {...methods.register('telephone', validationSchema.telephone)} 
-                      className={errors.telephone ? 'error' : ''}
                       placeholder="06 12 34 56 78"
-                    />
-                    {errors.telephone && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.telephone.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.telephone}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="age">Âge *</label>
-                    <input 
+                  <FormField
+                    name="age"
+                    label="Âge *"
                       type="number" 
-                      id="age"
-                      {...methods.register('age', validationSchema.age)} 
-                      className={errors.age ? 'error' : ''}
                       placeholder="25"
-                      min="18"
-                      max="85"
-                    />
-                    {errors.age && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.age.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.age}
+                    inputProps={{ min: 18, max: 85 }}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="permisDate">Date d'obtention du permis *</label>
-                    <input 
+                  <FormField
+                    name="permisDate"
+                    label="Date d'obtention du permis *"
                       type="date" 
-                      id="permisDate"
-                      {...methods.register('permisDate', validationSchema.permisDate)} 
-                      className={errors.permisDate ? 'error' : ''}
-                    />
-                    {errors.permisDate && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.permisDate.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.permisDate}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="experience">Expérience de conduite *</label>
-                    <select 
-                      id="experience"
-                      {...methods.register('experience', validationSchema.experience)} 
-                      className={errors.experience ? 'error' : ''}
-                    >
-                      <option value="">--Sélectionner--</option>
-                      {experienceOptions.map(option => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
-                    {errors.experience && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.experience.message}
-                      </span>
-                    )}
-                  </div>
+                  <FormField
+                    name="experience"
+                    label="Expérience de conduite *"
+                    type="select"
+                    options={experienceSelectOptions}
+                    rules={validationSchema.experience}
+                  />
                 </div>
 
                 <div className="buttons">
@@ -638,61 +540,35 @@ function Devis() {
               >
                 <div className="step-header">
                   <Clock size={24} />
-                  <h2>Adresse et informations complémentaires</h2>
+                  <h2>Étape 3 : Adresse et informations complémentaires</h2>
                 </div>
 
                 <div className="form-grid">
-                  <div className="form-group full-width">
-                    <label htmlFor="adresse">Adresse *</label>
-                    <input 
+                  <FormField
+                    name="adresse"
+                    label="Adresse *"
                       type="text" 
-                      id="adresse"
-                      {...methods.register('adresse', validationSchema.adresse)} 
-                      className={errors.adresse ? 'error' : ''}
                       placeholder="123 Rue de la Paix"
-                    />
-                    {errors.adresse && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.adresse.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.adresse}
+                    wrapperClassName="full-width"
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="codePostal">Code postal *</label>
-                    <input 
+                  <FormField
+                    name="codePostal"
+                    label="Code postal *"
                       type="text" 
-                      id="codePostal"
-                      {...methods.register('codePostal', validationSchema.codePostal)} 
-                      className={errors.codePostal ? 'error' : ''}
                       placeholder="75001"
-                      maxLength="5"
-                    />
-                    {errors.codePostal && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.codePostal.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.codePostal}
+                    inputProps={{ maxLength: 5 }}
+                  />
 
-                  <div className="form-group">
-                    <label htmlFor="ville">Ville *</label>
-                    <input 
+                  <FormField
+                    name="ville"
+                    label="Ville *"
                       type="text" 
-                      id="ville"
-                      {...methods.register('ville', validationSchema.ville)} 
-                      className={errors.ville ? 'error' : ''}
                       placeholder="Paris"
-                    />
-                    {errors.ville && (
-                      <span className="error-message">
-                        <AlertCircle size={16} />
-                        {errors.ville.message}
-                      </span>
-                    )}
-                  </div>
+                    rules={validationSchema.ville}
+                  />
                 </div>
 
                 <div className="buttons">
@@ -717,81 +593,42 @@ function Devis() {
               >
                 <div className="step-header">
                   <Shield size={24} />
-                  <h2>Choix des garanties</h2>
+                  <h2>Étape 4 : Choix des garanties</h2>
                 </div>
 
                 <div className="coverage-section">
                   <h3>Garanties principales</h3>
                   <div className="coverage-grid">
-                    <div className="coverage-card">
-                      <label className="coverage-label">
-                        <input 
-                          type="checkbox" 
-                          {...methods.register('garantieVol')} 
-                        />
-                        <div className="coverage-content">
-                          <h4>Vol</h4>
-                          <p>Protection contre le vol et la destruction</p>
-                          <span className="coverage-price">+200€/an</span>
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="coverage-card">
-                      <label className="coverage-label">
-                        <input 
-                          type="checkbox" 
-                          {...methods.register('garantieBris')} 
-                        />
-                        <div className="coverage-content">
-                          <h4>Bris de glace</h4>
-                          <p>Réparation des vitres et pare-brise</p>
-                          <span className="coverage-price">+150€/an</span>
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="coverage-card">
-                      <label className="coverage-label">
-                        <input 
-                          type="checkbox" 
-                          {...methods.register('garantieTousRisques')} 
-                        />
-                        <div className="coverage-content">
-                          <h4>Tous Risques</h4>
-                          <p>Protection complète tous dommages</p>
-                          <span className="coverage-price">+400€/an</span>
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="coverage-card">
-                      <label className="coverage-label">
-                        <input 
-                          type="checkbox" 
-                          {...methods.register('garantieAssistance')} 
-                        />
-                        <div className="coverage-content">
-                          <h4>Assistance 0km</h4>
-                          <p>Dépannage et assistance routière</p>
-                          <span className="coverage-price">+100€/an</span>
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="coverage-card">
-                      <label className="coverage-label">
-                        <input 
-                          type="checkbox" 
-                          {...methods.register('garantieDefense')} 
-                        />
-                        <div className="coverage-content">
-                          <h4>Défense pénale</h4>
-                          <p>Protection juridique en cas de litige</p>
-                          <span className="coverage-price">+80€/an</span>
-                        </div>
-                      </label>
-                    </div>
+                    <CoverageCard
+                      name="garantieVol"
+                      title="Vol"
+                      description="Protection contre le vol et la destruction"
+                       priceLabel="+1 500 MAD/an"
+                    />
+                    <CoverageCard
+                      name="garantieBris"
+                      title="Bris de glace"
+                      description="Réparation des vitres et pare-brise"
+                       priceLabel="+800 MAD/an"
+                    />
+                    <CoverageCard
+                      name="garantieTousRisques"
+                      title="Tous Risques"
+                      description="Protection complète tous dommages"
+                       priceLabel="+3 000 MAD/an"
+                    />
+                    <CoverageCard
+                      name="garantieAssistance"
+                      title="Assistance 0km"
+                      description="Dépannage et assistance routière"
+                       priceLabel="+300 MAD/an"
+                    />
+                    <CoverageCard
+                      name="garantieDefense"
+                      title="Défense pénale"
+                      description="Protection juridique en cas de litige"
+                       priceLabel="+200 MAD/an"
+                    />
                   </div>
                 </div>
 
@@ -827,8 +664,10 @@ function Devis() {
                 {/* Price Preview */}
                 <div className="price-preview">
                   <div className="price-header">
-                    <Calculator size={20} />
-                    <span>Estimation du prix</span>
+                    <div className="calculator-icon">
+                      <Calculator size={20} />
+                      <span>Estimation du prix</span>
+                    </div>
                     <button 
                       type="button" 
                       onClick={() => setShowPriceBreakdown(!showPriceBreakdown)}
@@ -838,7 +677,7 @@ function Devis() {
                     </button>
                   </div>
                   <div className="price-amount">
-                    <span className="currency">€</span>
+                    <span className="currency">MAD</span>
                     <span className="amount">{estimatedPrice}</span>
                     <span className="period">/an</span>
                   </div>
@@ -850,11 +689,11 @@ function Devis() {
                     >
                       <div className="breakdown-item">
                         <span>Prix de base</span>
-                        <span>€{Math.round(estimatedPrice * 0.7)}</span>
+                        <span>{Math.round(estimatedPrice * 0.7)} MAD</span>
                       </div>
                       <div className="breakdown-item">
                         <span>Garanties additionnelles</span>
-                        <span>€{Math.round(estimatedPrice * 0.3)}</span>
+                        <span>{Math.round(estimatedPrice * 0.3)} MAD</span>
                       </div>
                     </motion.div>
                   )}
@@ -881,7 +720,7 @@ function Devis() {
                 className="form-step recap-step"
               >
                 <div className="recap-card">
-                  <h2>Résumé de votre devis</h2>
+                  <h2>Étape 5 : Résumé de votre devis</h2>
                   
                   <div className="recap-sections">
                     <div className="recap-section">
@@ -956,7 +795,7 @@ function Devis() {
                         {formData.garantieDefense && <div className="recap-item"><span>✓</span><strong>Défense pénale</strong></div>}
                         <div className="recap-item">
                           <span>Franchise :</span>
-                          <strong>{formData.franchise}€</strong>
+                          <strong>{formData.franchise} MAD</strong>
                         </div>
                         <div className="recap-item">
                           <span>Bonus/Malus :</span>
@@ -970,7 +809,7 @@ function Devis() {
                     <div className="price-display">
                       <span className="price-label">Prix total annuel</span>
                       <div className="price-amount-large">
-                        <span className="currency">€</span>
+                         <span className="currency">MAD</span>
                         <span className="amount">{estimatedPrice}</span>
                         <span className="period">/an</span>
                       </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Home.css';
-import FeaturesSection from '../components/FeaturesSection';
-import TestimonialsSection from '../components/TestimonialsSection';
+import FeaturesSection from '../components/home/FeaturesSection';
+import TestimonialsSection from '../components/home/TestimonialsSection';
 
 function Home() {
   return (

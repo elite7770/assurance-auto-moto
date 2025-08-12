@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/EnhancedContactForm.css';
+import '../../styles/EnhancedContactForm.css';
 
 const EnhancedContactForm = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +10,7 @@ const EnhancedContactForm = () => {
     subject: '',
     message: '',
     urgency: 'normal',
-    preferredContact: 'email'
+    preferredContact: 'email',
   });
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,7 +20,7 @@ const EnhancedContactForm = () => {
     { value: 'low', label: 'Faible', description: 'Question générale' },
     { value: 'normal', label: 'Normale', description: 'Demande standard' },
     { value: 'high', label: 'Élevée', description: 'Urgent - 24h' },
-    { value: 'critical', label: 'Critique', description: 'Immédiat' }
+    { value: 'critical', label: 'Critique', description: 'Immédiat' },
   ];
 
   const subjectOptions = [
@@ -29,24 +29,21 @@ const EnhancedContactForm = () => {
     'Modification de contrat',
     'Question technique',
     'Réclamation',
-    'Autre'
+    'Autre',
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
-    setSelectedFiles(prev => [...prev, ...files]);
+    setSelectedFiles((prev) => [...prev, ...files]);
   };
 
   const removeFile = (index) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -54,12 +51,9 @@ const EnhancedContactForm = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus('success');
-      
-      // Reset form after successful submission
       setTimeout(() => {
         setFormData({
           firstName: '',
@@ -69,7 +63,7 @@ const EnhancedContactForm = () => {
           subject: '',
           message: '',
           urgency: 'normal',
-          preferredContact: 'email'
+          preferredContact: 'email',
         });
         setSelectedFiles([]);
         setSubmitStatus(null);
@@ -91,7 +85,6 @@ const EnhancedContactForm = () => {
         <h2>Contactez-nous</h2>
         <p>Notre équipe est là pour vous aider. Choisissez le moyen qui vous convient le mieux.</p>
       </div>
-
       <div className="contact-methods">
         <div className="contact-method">
           <div className="method-icon">📞</div>
@@ -99,14 +92,12 @@ const EnhancedContactForm = () => {
           <p>01 23 45 67 89</p>
           <span className="method-hours">Lun-Ven: 8h-19h</span>
         </div>
-        
         <div className="contact-method">
           <div className="method-icon">✉️</div>
           <h3>Email</h3>
           <p>contact@assurmobility.fr</p>
           <span className="method-hours">Réponse sous 24h</span>
         </div>
-        
         <div className="contact-method">
           <div className="method-icon">💬</div>
           <h3>Chat en direct</h3>
@@ -114,56 +105,27 @@ const EnhancedContactForm = () => {
           <span className="method-hours">24h/24</span>
         </div>
       </div>
-
       <form onSubmit={handleSubmit} className="contact-form">
         <div className="form-section">
           <h3>Informations personnelles</h3>
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="firstName">Prénom *</label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                required
-              />
+              <input type="text" id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
             </div>
             <div className="form-group">
               <label htmlFor="lastName">Nom *</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                required
-              />
+              <input type="text" id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
             </div>
           </div>
-
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="email">Email *</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
+              <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required />
             </div>
             <div className="form-group">
               <label htmlFor="phone">Téléphone</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-              />
+              <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} />
             </div>
           </div>
         </div>
@@ -173,28 +135,17 @@ const EnhancedContactForm = () => {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="subject">Sujet *</label>
-              <select
-                id="subject"
-                name="subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                required
-              >
+              <select id="subject" name="subject" value={formData.subject} onChange={handleInputChange} required>
                 <option value="">Sélectionnez un sujet</option>
-                {subjectOptions.map(option => (
+                {subjectOptions.map((option) => (
                   <option key={option} value={option}>{option}</option>
                 ))}
               </select>
             </div>
             <div className="form-group">
               <label htmlFor="urgency">Urgence</label>
-              <select
-                id="urgency"
-                name="urgency"
-                value={formData.urgency}
-                onChange={handleInputChange}
-              >
-                {urgencyOptions.map(option => (
+              <select id="urgency" name="urgency" value={formData.urgency} onChange={handleInputChange}>
+                {urgencyOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label} - {option.description}
                   </option>
@@ -202,28 +153,13 @@ const EnhancedContactForm = () => {
               </select>
             </div>
           </div>
-
           <div className="form-group">
             <label htmlFor="message">Message *</label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleInputChange}
-              rows="5"
-              placeholder="Décrivez votre demande en détail..."
-              required
-            />
+            <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} rows="5" placeholder="Décrivez votre demande en détail..." required />
           </div>
-
           <div className="form-group">
             <label htmlFor="preferredContact">Moyen de contact préféré</label>
-            <select
-              id="preferredContact"
-              name="preferredContact"
-              value={formData.preferredContact}
-              onChange={handleInputChange}
-            >
+            <select id="preferredContact" name="preferredContact" value={formData.preferredContact} onChange={handleInputChange}>
               <option value="email">Email</option>
               <option value="phone">Téléphone</option>
               <option value="chat">Chat</option>
@@ -234,21 +170,13 @@ const EnhancedContactForm = () => {
         <div className="form-section">
           <h3>Pièces jointes (optionnel)</h3>
           <div className="file-upload-area">
-            <input
-              type="file"
-              id="fileUpload"
-              multiple
-              onChange={handleFileSelect}
-              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-              className="file-input"
-            />
+            <input type="file" id="fileUpload" multiple onChange={handleFileSelect} accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" className="file-input" />
             <label htmlFor="fileUpload" className="file-upload-label">
               <span className="upload-icon">📎</span>
               <span>Cliquez pour ajouter des fichiers</span>
               <span className="upload-hint">PDF, JPG, PNG, DOC (max 10MB par fichier)</span>
             </label>
           </div>
-
           {selectedFiles.length > 0 && (
             <div className="selected-files">
               <h4>Fichiers sélectionnés :</h4>
@@ -256,13 +184,7 @@ const EnhancedContactForm = () => {
                 <div key={index} className="file-item">
                   <span className="file-name">{file.name}</span>
                   <span className="file-size">{formatFileSize(file.size)}</span>
-                  <button
-                    type="button"
-                    onClick={() => removeFile(index)}
-                    className="remove-file"
-                  >
-                    ✕
-                  </button>
+                  <button type="button" onClick={() => removeFile(index)} className="remove-file">✕</button>
                 </div>
               ))}
             </div>
@@ -270,19 +192,8 @@ const EnhancedContactForm = () => {
         </div>
 
         <div className="form-actions">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="submit-button"
-          >
-            {isSubmitting ? (
-              <>
-                <span className="loading-spinner"></span>
-                Envoi en cours...
-              </>
-            ) : (
-              'Envoyer le message'
-            )}
+          <button type="submit" disabled={isSubmitting} className="submit-button">
+            {isSubmitting ? <><span className="loading-spinner"></span>Envoi en cours...</> : 'Envoyer le message'}
           </button>
         </div>
 
@@ -301,3 +212,6 @@ const EnhancedContactForm = () => {
 };
 
 export default EnhancedContactForm;
+
+
+

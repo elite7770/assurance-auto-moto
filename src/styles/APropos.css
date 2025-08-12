@@ -601,4 +601,6 @@
 
 /* Remove white gap between header and hero */
 .apropos-page { padding-top: 0 !important; }
+/* Add extra space before the footer */
+.apropos-page { padding-bottom: 128px !important; margin-bottom: 120px !important; }
 .apropos-hero-animated { margin-top: 0 !important; }

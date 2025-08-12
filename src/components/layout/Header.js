@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import '../styles/Header.css';
+import { useAuth } from '../../context/AuthContext';
+import '../../styles/Header.css';
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -74,3 +74,5 @@ function Header() {
 }
 
 export default Header;
+
+

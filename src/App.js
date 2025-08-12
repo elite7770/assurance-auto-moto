@@ -8,10 +8,10 @@ import Contact from './pages/Contact';
 import EspaceClient from './pages/EspaceClient';
 import Confirmation from './pages/Confirmation';
 import Dashboard from './pages/Dashboard';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import ScrollToTop from './components/ScrollToTop';
-import ProtectedRoute from './components/ProtectedRoute';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+import ScrollToTop from './components/layout/ScrollToTop';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
