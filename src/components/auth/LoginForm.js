@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
+import '../../styles/AuthForms.css';
 
 function LoginForm({ onSwitchToRegister }) {
   const [formData, setFormData] = useState({

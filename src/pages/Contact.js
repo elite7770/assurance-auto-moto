@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
+import { Phone, HelpCircle } from 'lucide-react';
 import FAQSection from '../components/contact/FAQSection';
 import EnhancedContactForm from '../components/contact/EnhancedContactForm';
-import AppointmentBooking from '../components/contact/AppointmentBooking';
-import LiveChatWidget from '../components/contact/LiveChatWidget';
 import '../styles/Contact.css';
 
 function Contact() {
@@ -12,7 +11,7 @@ function Contact() {
     <main className="contact-page">
       <div className="contact-hero">
         <h1>Contact & Support</h1>
-        <p>Nous sommes là pour vous accompagner à chaque étape</p>
+        <p>Votre partenaire de confiance pour tous vos besoins d'assurance</p>
       </div>
 
       <div className="contact-tabs">
@@ -20,19 +19,15 @@ function Contact() {
           className={`tab-button ${activeTab === 'contact' ? 'active' : ''}`}
           onClick={() => setActiveTab('contact')}
         >
-          📞 Nous Contacter
+          <Phone size={20} />
+          Nous Contacter
         </button>
         <button 
           className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`}
           onClick={() => setActiveTab('faq')}
         >
-          ❓ FAQ
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'appointment' ? 'active' : ''}`}
-          onClick={() => setActiveTab('appointment')}
-        >
-          📅 Prendre RDV
+          <HelpCircle size={20} />
+          FAQ
         </button>
       </div>
 
@@ -44,14 +39,7 @@ function Contact() {
         {activeTab === 'faq' && (
           <FAQSection />
         )}
-
-        {activeTab === 'appointment' && (
-          <AppointmentBooking />
-        )}
       </div>
-
-      {/* Live Chat Widget */}
-      <LiveChatWidget />
     </main>
   );
 }

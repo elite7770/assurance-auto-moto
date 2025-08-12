@@ -27,12 +27,18 @@
   margin-bottom: 60px;
 }
 
-/* For Desktop: Grid Layout */
+/* For Desktop: Horizontal Layout */
 .features-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
   gap: 40px;
-  justify-items: center;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
 }
 
 /* For Mobile: Horizontal Scroll Layout */
@@ -44,12 +50,14 @@
     padding-bottom: 20px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
   }
 
   .feature-item {
     min-width: 280px;
     flex: 0 0 auto;
     scroll-snap-align: center;
+    max-width: none;
   }
 }
 
@@ -59,10 +67,12 @@
   padding: 40px 20px;
   border-radius: 20px;
   width: 100%;
-  max-width: 300px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .feature-item:hover {
@@ -75,12 +85,13 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
   box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
   transition: box-shadow 0.3s ease;
+  order: 1;
 }
 
 .feature-item:hover .icon-bubble {
@@ -98,10 +109,12 @@
   font-size: 1.5rem;
   color: #FFFFFF;
   margin-bottom: 12px;
+  order: 2;
 }
 
 .feature-item p {
   color: #CBD5E1;
   font-size: 1rem;
   line-height: 1.5;
+  order: 3;
 }

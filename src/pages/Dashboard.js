@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -32,7 +32,7 @@ const Dashboard = () => {
   const [filterStatus, setFilterStatus] = useState('all');
 
   // Mock data for enhanced functionality
-  const mockNotifications = [
+  const mockNotifications = useMemo(() => [
     {
       id: 1,
       type: 'renewal',
@@ -57,7 +57,7 @@ const Dashboard = () => {
       date: '2024-12-08',
       read: false
     }
-  ];
+  ], []);
 
   useEffect(() => {
     setNotifications(mockNotifications);
@@ -66,6 +66,16 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate('/espace-client');
+  };
+
+  const handleNewQuote = () => {
+    console.log('Navigating to /devis');
+    navigate('/devis');
+  };
+
+  const handleContactSupport = () => {
+    console.log('Navigating to /contact');
+    navigate('/contact');
   };
 
   const handleFileUpload = (e) => {
@@ -247,11 +257,11 @@ const Dashboard = () => {
                 <h2>Bienvenue dans votre espace client</h2>
                 <p>Gérez vos polices, suivez vos sinistres et accédez à tous vos documents en un clic.</p>
                 <div className="welcome-actions">
-                  <button className="btn-primary" onClick={() => navigate('/devis')}>
+                  <button className="btn-primary" onClick={handleNewQuote}>
                     <Plus size={18} />
                     Nouveau Devis
                   </button>
-                  <button className="btn-secondary">
+                  <button className="btn-secondary" onClick={handleContactSupport}>
                     Contacter le Support
                   </button>
                 </div>
@@ -301,7 +311,7 @@ const Dashboard = () => {
             <div className="quick-actions">
               <h3>Actions Rapides</h3>
               <div className="action-buttons">
-                <button className="action-btn" onClick={() => navigate('/devis')}>
+                <button className="action-btn" onClick={handleNewQuote}>
                   <Plus size={18} />
                   Nouveau Devis
                 </button>
@@ -313,7 +323,7 @@ const Dashboard = () => {
                   <User size={18} />
                   Modifier le Profil
                 </button>
-                <button className="action-btn">
+                <button className="action-btn" onClick={handleContactSupport}>
                   Contacter le Support
                 </button>
               </div>

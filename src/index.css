@@ -1,23 +1,27 @@
+/* Import the clean theme system */
+@import './styles/theme.css';
+
+/* Legacy variable support for backward compatibility */
 :root {
-  --color-primary: #1E40AF; /* primary blue */
-  --color-primary-700: #1D4ED8; /* lighter primary */
-  --color-accent: #38bdf8; /* footer accent */
-  --color-accent-2: #facc15; /* gold accent */
-  --color-dark: #0f172a; /* footer bg */
-  --color-light: #ffffff;
-  --color-muted: #6B7280;
-  --color-text: #0F172A;
-  --color-surface: #F9FAFB;
-  --color-surface-2: #F0F9FF;
-  --color-border: #E5E7EB;
-  --color-success: #10B981;
-  --color-danger: #EF4444;
+  --color-primary: var(--primary-blue);
+  --color-primary-700: var(--primary-blue-700);
+  --color-accent: var(--accent-red);
+  --color-accent-2: var(--warning);
+  --color-dark: var(--neutral-gray-900);
+  --color-light: var(--neutral-white);
+  --color-muted: var(--neutral-gray-500);
+  --color-text: var(--neutral-gray-900);
+  --color-surface: var(--neutral-gray-50);
+  --color-surface-2: var(--primary-blue-50);
+  --color-border: var(--neutral-gray-200);
+  --color-success: var(--success);
+  --color-danger: var(--error);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
 
-  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-700) 100%);
+  --gradient-primary: var(--gradient-primary);
 }
 
 body {
