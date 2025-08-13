@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Phone, HelpCircle } from 'lucide-react';
 import FAQSection from '../components/contact/FAQSection';
 import EnhancedContactForm from '../components/contact/EnhancedContactForm';
@@ -6,6 +6,14 @@ import '../styles/Contact.css';
 
 function Contact() {
   const [activeTab, setActiveTab] = useState('contact');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'faq' || tab === 'contact') {
+      setActiveTab(tab);
+    }
+  }, []);
 
   return (
     <main className="contact-page">

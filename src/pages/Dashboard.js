@@ -84,13 +84,6 @@ const Dashboard = () => {
     navigate('/contact');
   };
 
-  const handleNewPolicy = () => {
-    try {
-      localStorage.removeItem('devisFormData');
-    } catch (e) {}
-    navigate('/devis');
-  };
-
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -296,8 +289,10 @@ const Dashboard = () => {
           </div>
           <div className="user-details">
             <h1>Bonjour, {currentUser?.name || 'Utilisateur'} !</h1>
-            <p>{currentUser?.email}</p>
-            <span className="user-status">Client Premium</span>
+            <div className="user-badges">
+              <span className="user-email">{currentUser?.email}</span>
+              <span className="user-status">Client Premium</span>
+            </div>
           </div>
         </div>
         <div className="header-actions">
@@ -313,7 +308,7 @@ const Dashboard = () => {
             <div className="notifications-panel">
               <div className="notifications-header">
                 <h3>Notifications</h3>
-                <button className="mark-all-read">Tout marquer comme lu</button>
+                <button className="mark-all-read" onClick={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}>Tout marquer comme lu</button>
               </div>
               <div className="notifications-list">
                 {notifications.map(notification => (
@@ -530,7 +525,7 @@ const Dashboard = () => {
                   <option value="expired">Expirées</option>
                   <option value="pending">En attente</option>
                 </select>
-                <button className="btn-primary" onClick={handleNewPolicy}>
+                <button className="btn-primary">
                   <Plus size={18} />
                   Nouvelle Police
                 </button>
@@ -817,7 +812,7 @@ const Dashboard = () => {
             <div className="section-header">
               <h2>Facturation et Paiements</h2>
               <div className="section-actions">
-                <button className="btn-primary">
+                <button className="btn-primary" onClick={() => nextDueInvoice ? handleOpenPayment(nextDueInvoice) : null}>
                   <CreditCard size={18} />
                   Payer une Facture
                 </button>

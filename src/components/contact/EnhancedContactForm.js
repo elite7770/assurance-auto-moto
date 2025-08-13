@@ -125,7 +125,14 @@ function EnhancedContactForm() {
   };
 
   const handleQuickLinkClick = (link) => {
-    // Add navigation logic here
+    try {
+      if (!link) return;
+      if (link.startsWith('/')) {
+        window.location.href = link;
+      } else {
+        window.location.href = `/contact?tab=${encodeURIComponent(link)}`;
+      }
+    } catch {}
   };
 
   if (isSubmitted) {

@@ -57,9 +57,6 @@ function Header() {
                   <NavLink to="/dashboard" onClick={() => setShowUserMenu(false)}>
                     Mon Tableau de Bord
                   </NavLink>
-                  <NavLink to="/espace-client" onClick={() => setShowUserMenu(false)}>
-                    Mon Profil
-                  </NavLink>
                   <button onClick={handleLogout} className="logout-menu-item">
                     Se déconnecter
                   </button>

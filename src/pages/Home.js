@@ -9,11 +9,7 @@ function Home() {
     <main className="home-page">
 
       <section className="hero-section">
-        <video autoPlay muted loop className="hero-video">
-          <source src="/videos/auto-hero.mp4" type="video/mp4" />
-          {/* Fallback Image */}
-          <img src="/images/home-hero.jpg" alt="Hero" />
-        </video>
+        <img src="/images/home-hero.jpg" alt="Hero" className="hero-video" />
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <h1>Assurez Votre Mobilité en Toute Confiance</h1>
