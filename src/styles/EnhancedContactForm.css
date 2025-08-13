@@ -192,6 +192,14 @@
   margin-bottom: 3.5rem; 
 }
 
+/* Center the Bureau principal section */
+.contact-method:nth-child(3) {
+  grid-column: 1 / -1;
+  max-width: 400px;
+  margin: 0 auto;
+  justify-self: center;
+}
+
 .contact-method { 
   background: rgba(255, 255, 255, 0.08);
   padding: 2.5rem; 
@@ -835,6 +843,14 @@
   .contact-methods { 
     grid-template-columns: 1fr; 
     gap: 2rem; 
+  }
+  
+  /* Reset the centered Bureau principal section on mobile */
+  .contact-method:nth-child(3) {
+    grid-column: 1;
+    max-width: none;
+    margin: 0;
+    justify-self: stretch;
   }
   
   .contact-method { 

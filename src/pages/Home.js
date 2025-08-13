@@ -10,7 +10,7 @@ function Home() {
 
       <section className="hero-section">
         <video autoPlay muted loop className="hero-video">
-          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/auto-hero.mp4" type="video/mp4" />
           {/* Fallback Image */}
           <img src="/images/home-hero.jpg" alt="Hero" />
         </video>

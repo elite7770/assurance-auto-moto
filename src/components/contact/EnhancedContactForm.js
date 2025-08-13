@@ -125,7 +125,6 @@ function EnhancedContactForm() {
   };
 
   const handleQuickLinkClick = (link) => {
-    console.log('Navigating to:', link);
     // Add navigation logic here
   };
 

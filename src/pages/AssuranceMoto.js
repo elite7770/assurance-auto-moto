@@ -54,7 +54,7 @@ const AssuranceMoto = () => (
       <video autoPlay muted loop className="hero-video">
         <source src="/videos/moto-hero.mp4" type="video/mp4" />
         {/* Fallback Image */}
-        <img src="/images/hero-moto.png" alt="Hero Moto" />
+        <img src="/images/home-hero.jpg" alt="Hero Moto" />
       </video>
       <div className="hero-overlay"></div>
       <div className="hero-content">

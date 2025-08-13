@@ -22,7 +22,7 @@ import {
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, addDocument, updateUser } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -30,6 +30,14 @@ const Dashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [selectedPolicy, setSelectedPolicy] = useState(null);
+  const [selectedClaim, setSelectedClaim] = useState(null);
+  const [claimDocModalClaim, setClaimDocModalClaim] = useState(null);
+  const [claimDocFile, setClaimDocFile] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [isPaying, setIsPaying] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('card');
 
   // Mock data for enhanced functionality
   const mockNotifications = useMemo(() => [
@@ -69,13 +77,18 @@ const Dashboard = () => {
   };
 
   const handleNewQuote = () => {
-    console.log('Navigating to /devis');
     navigate('/devis');
   };
 
   const handleContactSupport = () => {
-    console.log('Navigating to /contact');
     navigate('/contact');
+  };
+
+  const handleNewPolicy = () => {
+    try {
+      localStorage.removeItem('devisFormData');
+    } catch (e) {}
+    navigate('/devis');
   };
 
   const handleFileUpload = (e) => {
@@ -99,6 +112,98 @@ const Dashboard = () => {
       setSelectedFile(null);
       setUploading(false);
     }, 2000);
+  };
+
+  const handleTrackClaim = (claim) => {
+    setActiveTab('claims');
+    setSelectedClaim(claim);
+  };
+
+  const handleAddClaimDocuments = (claim) => {
+    setActiveTab('claims');
+    setClaimDocModalClaim(claim);
+    setClaimDocFile(null);
+  };
+
+  const handleSubmitClaimDocument = async (e) => {
+    e.preventDefault();
+    if (!claimDocFile || !claimDocModalClaim) {
+      alert('Veuillez sélectionner un fichier');
+      return;
+    }
+    const file = claimDocFile;
+    const sizeMb = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+    const newDoc = {
+      id: `DOC${Date.now()}`,
+      name: file.name,
+      type: 'Document de sinistre',
+      uploadDate: new Date().toISOString().slice(0, 10),
+      policyId: claimDocModalClaim.policyId || null,
+      size: sizeMb
+    };
+    addDocument(newDoc);
+
+    if (currentUser) {
+      const updatedClaims = (currentUser.claims || []).map(c => {
+        if (c.id === claimDocModalClaim.id) {
+          const existingDocs = Array.isArray(c.documents) ? c.documents : [];
+          return { ...c, documents: [...existingDocs, file.name] };
+        }
+        return c;
+      });
+      updateUser({ ...currentUser, claims: updatedClaims });
+    }
+
+    alert('Document ajouté au sinistre');
+    setClaimDocModalClaim(null);
+    setClaimDocFile(null);
+  };
+
+  const handleViewPolicyDetails = (policy) => {
+    setActiveTab('policies');
+    setSelectedPolicy(policy);
+  };
+
+  const handleRenewPolicy = (policy) => {
+    try {
+      const isAuto = (policy.type || '').toLowerCase() === 'auto';
+      const fullName = currentUser?.name || '';
+      const nameParts = fullName.split(' ');
+      const prenom = nameParts.slice(0, -1).join(' ') || fullName;
+      const nom = nameParts.slice(-1).join(' ') || '';
+
+      const coverage = policy.coverage || [];
+      const devisData = {
+        vehiculeType: isAuto ? 'auto' : 'moto',
+        marque: policy.brand || '',
+        modele: policy.model || '',
+        annee: policy.year || '',
+        puissance: '',
+        usage: 'personnel',
+        nom,
+        prenom,
+        email: currentUser?.email || '',
+        telephone: currentUser?.phone || '',
+        age: '',
+        permisDate: '',
+        experience: '',
+        adresse: currentUser?.address || '',
+        codePostal: currentUser?.postalCode || '',
+        ville: currentUser?.city || '',
+        garantieVol: coverage.includes('Vol'),
+        garantieBris: coverage.includes('Bris de glace'),
+        garantieTousRisques: coverage.includes('Tous Risques'),
+        garantieAssistance: coverage.includes('Assistance'),
+        garantieDefense: coverage.includes('Défense pénale') || coverage.includes('Défense'),
+        franchise: String(policy.franchise || '3000'),
+        bonus: '0'
+      };
+
+      localStorage.setItem('devisFormData', JSON.stringify(devisData));
+      navigate('/devis');
+    } catch (err) {
+      alert("Impossible d'initier le renouvellement. Veuillez réessayer.");
+    }
   };
 
   const markNotificationAsRead = (notificationId) => {
@@ -131,6 +236,43 @@ const Dashboard = () => {
       case 'En attente': return <AlertCircle size={16} />;
       default: return <Clock size={16} />;
     }
+  };
+  // Billing derived data
+  const invoices = useMemo(() => currentUser?.invoices ?? [], [currentUser?.invoices]);
+  const amountDue = useMemo(
+    () => invoices.filter(inv => inv.status === 'En attente').reduce((sum, inv) => sum + inv.amount, 0),
+    [invoices]
+  );
+  const lastPaidInvoice = useMemo(() => {
+    const paid = invoices.filter(inv => inv.status === 'Payée');
+    paid.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return paid[0] || null;
+  }, [invoices]);
+  const nextDueInvoice = useMemo(() => {
+    const pending = invoices.filter(inv => inv.status === 'En attente');
+    pending.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+    return pending[0] || null;
+  }, [invoices]);
+
+  const handleOpenPayment = (invoice) => {
+    setSelectedInvoice(invoice);
+    setPaymentMethod('card');
+    setShowPaymentModal(true);
+  };
+
+  const handleConfirmPayment = (e) => {
+    e.preventDefault();
+    if (!selectedInvoice || !currentUser) return;
+    setIsPaying(true);
+    setTimeout(() => {
+      const updatedInvoices = (currentUser.invoices || []).map(inv =>
+        inv.id === selectedInvoice.id ? { ...inv, status: 'Payée' } : inv
+      );
+      updateUser({ ...currentUser, invoices: updatedInvoices });
+      setIsPaying(false);
+      setShowPaymentModal(false);
+      alert('Paiement effectué avec succès');
+    }, 800);
   };
 
   const filteredPolicies = currentUser?.policies?.filter(policy => 
@@ -388,7 +530,7 @@ const Dashboard = () => {
                   <option value="expired">Expirées</option>
                   <option value="pending">En attente</option>
                 </select>
-                <button className="btn-primary">
+                <button className="btn-primary" onClick={handleNewPolicy}>
                   <Plus size={18} />
                   Nouvelle Police
                 </button>
@@ -427,11 +569,11 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="policy-actions">
-                    <button className="btn-secondary">
+                    <button className="btn-secondary" onClick={() => handleViewPolicyDetails(policy)}>
                       <Eye size={16} />
                       Voir les Détails
                     </button>
-                    <button className="btn-primary">
+                    <button className="btn-primary" onClick={() => handleRenewPolicy(policy)}>
                       <Shield size={16} />
                       Renouveler
                     </button>
@@ -439,6 +581,44 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
+            {selectedPolicy && (
+              <div className="policy-modal-overlay" onClick={() => setSelectedPolicy(null)}>
+                <div className="policy-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h3>Détails de la Police #{selectedPolicy.id}</h3>
+                    <button className="btn-secondary" onClick={() => setSelectedPolicy(null)}>Fermer</button>
+                  </div>
+                  <div className="modal-content">
+                    <div className="detail-row"><span className="detail-label">Type:</span><span className="detail-value">{selectedPolicy.type}</span></div>
+                    <div className="detail-row"><span className="detail-label">Véhicule:</span><span className="detail-value">{selectedPolicy.vehicle}</span></div>
+                    <div className="detail-row"><span className="detail-label">Marque/Modèle:</span><span className="detail-value">{selectedPolicy.brand} {selectedPolicy.model}</span></div>
+                    <div className="detail-row"><span className="detail-label">Année:</span><span className="detail-value">{selectedPolicy.year}</span></div>
+                    <div className="detail-row"><span className="detail-label">Immatriculation:</span><span className="detail-value">{selectedPolicy.plateNumber}</span></div>
+                    <div className="detail-row"><span className="detail-label">Période:</span><span className="detail-value">{formatDate(selectedPolicy.startDate)} → {formatDate(selectedPolicy.endDate)}</span></div>
+                    <div className="detail-row"><span className="detail-label">Prime:</span><span className="detail-value premium">{selectedPolicy.premium} MAD/an</span></div>
+                    <div className="detail-row"><span className="detail-label">Franchise:</span><span className="detail-value">{selectedPolicy.franchise} MAD</span></div>
+                    <div className="detail-row"><span className="detail-label">Garanties:</span><span className="detail-value">{(selectedPolicy.coverage || []).join(', ') || '—'}</span></div>
+                    <div className="detail-row"><span className="detail-label">Statut:</span><span className={`detail-value ${getStatusColor(selectedPolicy.status)}`}>{selectedPolicy.status}</span></div>
+                  </div>
+                  <div className="modal-actions">
+                    <button className="btn-secondary" onClick={() => setSelectedPolicy(null)}>
+                      Fermer
+                    </button>
+                    <button className="btn-primary" onClick={() => handleRenewPolicy(selectedPolicy)}>
+                      <Shield size={16} />
+                      Renouveler
+                    </button>
+                  </div>
+                </div>
+                <style>{`
+                  .policy-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+                  .policy-modal { background: #fff; border-radius: 8px; max-width: 640px; width: 95%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+                  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #eee; }
+                  .modal-content { padding: 16px 20px; }
+                  .modal-actions { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #eee; }
+                `}</style>
+              </div>
+            )}
           </div>
         )}
 
@@ -484,11 +664,11 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="claim-actions">
-                    <button className="btn-secondary">
+                    <button className="btn-secondary" onClick={() => handleTrackClaim(claim)}>
                       <Eye size={16} />
                       Suivre l'Avancement
                     </button>
-                    <button className="btn-primary">
+                    <button className="btn-primary" onClick={() => handleAddClaimDocuments(claim)}>
                       <FileText size={16} />
                       Ajouter des Documents
                     </button>
@@ -496,6 +676,74 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
+
+            {selectedClaim && (
+              <div className="policy-modal-overlay" onClick={() => setSelectedClaim(null)}>
+                <div className="policy-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h3>Suivi du Sinistre #{selectedClaim.id}</h3>
+                    <button className="btn-secondary" onClick={() => setSelectedClaim(null)}>Fermer</button>
+                  </div>
+                  <div className="modal-content">
+                    <div className="detail-row"><span className="detail-label">Date:</span><span className="detail-value">{formatDate(selectedClaim.date)}</span></div>
+                    <div className="detail-row"><span className="detail-label">Statut:</span><span className={`detail-value ${getStatusColor(selectedClaim.status)}`}>{selectedClaim.status}</span></div>
+                    <div className="detail-row"><span className="detail-label">Montant:</span><span className="detail-value">{selectedClaim.amount} MAD</span></div>
+                    <div className="detail-row"><span className="detail-label">Description:</span><span className="detail-value">{selectedClaim.description}</span></div>
+                    <div className="detail-row"><span className="detail-label">Documents:</span><span className="detail-value">{(selectedClaim.documents || []).join(', ') || '—'}</span></div>
+                    <div className="claim-timeline">
+                      <ul>
+                        <li>Déclaré le {formatDate(selectedClaim.date)}</li>
+                        {selectedClaim.status === 'Terminé' && selectedClaim.resolutionDate && (
+                          <li>Résolu le {formatDate(selectedClaim.resolutionDate)}</li>
+                        )}
+                        {selectedClaim.status !== 'Terminé' && selectedClaim.estimatedResolution && (
+                          <li>Résolution estimée le {formatDate(selectedClaim.estimatedResolution)}</li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="modal-actions">
+                    <button className="btn-secondary" onClick={() => setSelectedClaim(null)}>Fermer</button>
+                    <button className="btn-primary" onClick={() => { setSelectedClaim(null); handleAddClaimDocuments(selectedClaim); }}>Ajouter des Documents</button>
+                  </div>
+                </div>
+                <style>{`
+                  .policy-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+                  .policy-modal { background: #fff; border-radius: 8px; max-width: 640px; width: 95%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+                  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #eee; }
+                  .modal-content { padding: 16px 20px; }
+                  .modal-actions { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #eee; }
+                `}</style>
+              </div>
+            )}
+
+            {claimDocModalClaim && (
+              <div className="policy-modal-overlay" onClick={() => setClaimDocModalClaim(null)}>
+                <div className="policy-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h3>Ajouter des Documents - Sinistre #{claimDocModalClaim.id}</h3>
+                    <button className="btn-secondary" onClick={() => setClaimDocModalClaim(null)}>Fermer</button>
+                  </div>
+                  <form onSubmit={handleSubmitClaimDocument} className="modal-content">
+                    <div className="form-group">
+                      <label>Fichier</label>
+                      <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => setClaimDocFile(e.target.files && e.target.files[0] ? e.target.files[0] : null)} required />
+                    </div>
+                    <div className="modal-actions">
+                      <button type="button" className="btn-secondary" onClick={() => setClaimDocModalClaim(null)}>Annuler</button>
+                      <button type="submit" className="btn-primary">Ajouter</button>
+                    </div>
+                  </form>
+                </div>
+                <style>{`
+                  .policy-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+                  .policy-modal { background: #fff; border-radius: 8px; max-width: 640px; width: 95%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+                  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #eee; }
+                  .modal-content { padding: 16px 20px; }
+                  .modal-actions { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #eee; }
+                `}</style>
+              </div>
+            )}
 
             <div className="new-claim-form">
               <h3>Déclarer un Nouveau Sinistre</h3>
@@ -580,63 +828,84 @@ const Dashboard = () => {
               <div className="billing-stats">
                 <div className="billing-stat">
                   <h3>Montant dû</h3>
-                  <p className="amount-due">1,250 MAD</p>
-                  <span className="due-date">Échéance: 15/01/2025</span>
+                  <p className="amount-due">{amountDue} MAD</p>
+                  <span className="due-date">Échéance: {nextDueInvoice ? formatDate(nextDueInvoice.dueDate) : '—'}</span>
                 </div>
                 <div className="billing-stat">
                   <h3>Dernier paiement</h3>
-                  <p className="last-payment">450 MAD</p>
-                  <span className="payment-date">Le 10/12/2024</span>
+                  <p className="last-payment">{lastPaidInvoice ? `${lastPaidInvoice.amount} MAD` : '—'}</p>
+                  <span className="payment-date">{lastPaidInvoice ? `Le ${formatDate(lastPaidInvoice.date)}` : ''}</span>
                 </div>
                 <div className="billing-stat">
                   <h3>Prochaine échéance</h3>
-                  <p className="next-due">750 MAD</p>
-                  <span className="due-date">Le 15/01/2025</span>
+                  <p className="next-due">{nextDueInvoice ? `${nextDueInvoice.amount} MAD` : '—'}</p>
+                  <span className="due-date">{nextDueInvoice ? `Le ${formatDate(nextDueInvoice.dueDate)}` : ''}</span>
                 </div>
               </div>
             </div>
 
             <div className="invoices-list">
               <h3>Historique des Factures</h3>
-              <div className="invoice-item">
-                <div className="invoice-info">
-                  <h4>Facture #FAC001</h4>
-                  <p>Police Auto POL001 - Renouvellement annuel</p>
-                  <span className="invoice-date">15/12/2024</span>
+              {invoices.map(inv => (
+                <div key={inv.id} className="invoice-item">
+                  <div className="invoice-info">
+                    <h4>Facture #{inv.number}</h4>
+                    <p>{inv.description}</p>
+                    <span className="invoice-date">{formatDate(inv.date)}</span>
+                  </div>
+                  <div className="invoice-amount">
+                    <span className="amount">{inv.amount} MAD</span>
+                    <span className={`status ${inv.status === 'Payée' ? 'paid' : (inv.status === 'En attente' ? 'pending' : '')}`}>{inv.status}</span>
+                  </div>
+                  <div className="invoice-actions">
+                    {inv.status === 'En attente' && (
+                      <button className="btn-primary" onClick={() => handleOpenPayment(inv)}>
+                        <CreditCard size={16} />
+                        Payer
+                      </button>
+                    )}
+                    <button className="btn-secondary">
+                      <Download size={16} />
+                      Télécharger
+                    </button>
+                  </div>
                 </div>
-                <div className="invoice-amount">
-                  <span className="amount">450 MAD</span>
-                  <span className="status paid">Payée</span>
-                </div>
-                <div className="invoice-actions">
-                  <button className="btn-secondary">
-                    <Download size={16} />
-                    Télécharger
-                  </button>
-                </div>
-              </div>
-              <div className="invoice-item">
-                <div className="invoice-info">
-                  <h4>Facture #FAC002</h4>
-                  <p>Police Moto POL002 - Renouvellement annuel</p>
-                  <span className="invoice-date">15/01/2025</span>
-                </div>
-                <div className="invoice-amount">
-                  <span className="amount">280 MAD</span>
-                  <span className="status pending">En attente</span>
-                </div>
-                <div className="invoice-actions">
-                  <button className="btn-primary">
-                    <CreditCard size={16} />
-                    Payer
-                  </button>
-                  <button className="btn-secondary">
-                    <Download size={16} />
-                    Télécharger
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
+
+            {showPaymentModal && selectedInvoice && (
+              <div className="policy-modal-overlay" onClick={() => setShowPaymentModal(false)}>
+                <div className="policy-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h3>Payer la Facture #{selectedInvoice.number}</h3>
+                    <button className="btn-secondary" onClick={() => setShowPaymentModal(false)}>Fermer</button>
+                  </div>
+                  <form className="modal-content" onSubmit={handleConfirmPayment}>
+                    <div className="detail-row"><span className="detail-label">Montant:</span><span className="detail-value">{selectedInvoice.amount} MAD</span></div>
+                    <div className="detail-row"><span className="detail-label">Échéance:</span><span className="detail-value">{formatDate(selectedInvoice.dueDate)}</span></div>
+                    <div className="form-group">
+                      <label>Méthode de paiement</label>
+                      <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                        <option value="card">Carte bancaire</option>
+                        <option value="transfer">Virement</option>
+                        <option value="cash">Espèces (agence)</option>
+                      </select>
+                    </div>
+                    <div className="modal-actions">
+                      <button type="button" className="btn-secondary" onClick={() => setShowPaymentModal(false)}>Annuler</button>
+                      <button type="submit" className="btn-primary" disabled={isPaying}>{isPaying ? 'Paiement...' : 'Payer maintenant'}</button>
+                    </div>
+                  </form>
+                </div>
+                <style>{`
+                  .policy-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+                  .policy-modal { background: #fff; border-radius: 8px; max-width: 640px; width: 95%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+                  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #eee; }
+                  .modal-content { padding: 16px 20px; }
+                  .modal-actions { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #eee; }
+                `}</style>
+              </div>
+            )}
           </div>
         )}
 
